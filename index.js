@@ -35,8 +35,15 @@ async function run() {
     app.post('/product', async (req, res) =>{
       const newProduct = req.body;
       console.log(newProduct);
-      // Insert the defined document into the "haiku" collection
+     
       const result = await technology.insertOne(newProduct);
+      res.send(result)
+    })
+
+
+    app.get('/product', async(req, res) =>{
+      const cursor = technology.find();
+      const result = await cursor.toArray();
       res.send(result)
     })
 
