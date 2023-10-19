@@ -27,6 +27,7 @@ async function run() {
 
     const technologyCollection = client.db("technologyDB");
     const technology = technologyCollection .collection("technology");
+    const brandName = technologyCollection.collection("brandName")
   
    
     await client.connect();
@@ -40,11 +41,36 @@ async function run() {
       res.send(result)
     })
 
+    app.post('/brands', async (req, res) =>{
+      const brands = req.body;
+      console.log(brands);
+     
+      const result = await brandName .insertOne(brands);
+      res.send(result)
+    })
+
 
     app.get('/product', async(req, res) =>{
       const cursor = technology.find();
       const result = await cursor.toArray();
       res.send(result)
+    })
+
+    app.get('/brands', async(req, res) =>{
+      const cursor = brandName.find();
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+
+    app.get('/brands/:brandName', async(req, res) =>{
+      const reqbrandName = req.params.brandName;
+      const query = { brandName: reqbrandName };
+      const result = await technology.find(query).toArray(); 
+      console.log(result);
+      res.send(result);
+
+
+
     })
 
 
