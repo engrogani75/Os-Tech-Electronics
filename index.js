@@ -24,14 +24,29 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
+
+    const technologyCollection = client.db("technologyDB");
+    const technology = technologyCollection .collection("technology");
+  
+   
     await client.connect();
     // Send a ping to confirm a successful connection
+
+    app.post('/product', async (req, res) =>{
+      const newProduct = req.body;
+      console.log(newProduct);
+      // Insert the defined document into the "haiku" collection
+      const result = await technology.insertOne(newProduct);
+      res.send(result)
+    })
+
+
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
