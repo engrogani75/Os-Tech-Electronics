@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = process.env.port || 5000;
 
@@ -28,6 +28,7 @@ async function run() {
     const technologyCollection = client.db("technologyDB");
     const technology = technologyCollection .collection("technology");
     const brandName = technologyCollection.collection("brandName")
+    const addToCard = technologyCollection.collection("AddToCard")
   
    
     await client.connect();
@@ -47,6 +48,13 @@ async function run() {
      
       const result = await brandName .insertOne(brands);
       res.send(result)
+    })
+
+    app.post('/addtocart', async(req, res) =>{
+      const addTOcardData = req.body;
+      console.log(addTOcardData);
+      const result = await addToCard.insertOne(addTOcardData)
+      res.send(result )
     })
 
 
@@ -69,8 +77,13 @@ async function run() {
       console.log(result);
       res.send(result);
 
+    })
 
-
+    app.get('/product/:id', async(req, res) =>{
+      const id = req.params.id
+      const query = {_id: new ObjectId(id)}
+      const result = await technology.findOne(query)
+      res.send(result)
     })
 
 
