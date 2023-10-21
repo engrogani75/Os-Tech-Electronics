@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+require('dotenv').config()
 const app = express()
 const port = process.env.port || 5000;
 
@@ -11,7 +12,7 @@ app.use(express.json())
 
 
 
-const uri = "mongodb+srv://technologyShop:QQ4XXyqD3Mbma26w@cluster0.d33r4qq.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.d33r4qq.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -29,6 +30,7 @@ async function run() {
     const technology = technologyCollection .collection("technology");
     const brandName = technologyCollection.collection("brandName")
     const addToCard = technologyCollection.collection("AddToCard")
+    const user = technologyCollection.collection("user")
   
    
     await client.connect();
@@ -55,6 +57,37 @@ async function run() {
       console.log(addTOcardData);
       const result = await addToCard.insertOne(addTOcardData)
       res.send(result )
+    })
+
+    app.post('/users', async(req, res) =>{
+      const users = req.body;
+      console.log(users);
+      const result = await user.insertOne(users)
+      res.send(result )
+    })
+
+
+
+    app.put('/update/:id', async(req, res) =>{
+      const id = req.params.id
+      const product = req.body;
+      console.log(id, product);
+
+      const filter = {_id: new ObjectId(id)}
+      const options = {upsert: true};
+      const updateProduct = {
+        $set: {
+          image: product.image,
+          name: product.name,
+          brandName: product.brandName,
+          type: product.type,
+          price: product.price,
+          rating: product.rating
+        }
+      }
+
+      const result = await technology.updateOne(filter, updateProduct, options)
+      res.send(result)
     })
 
 
