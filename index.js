@@ -5,7 +5,6 @@ require('dotenv').config()
 const app = express()
 const port = process.env.port || 5000;
 
-
 app.use(cors())
 app.use(express.json())
 
@@ -33,7 +32,7 @@ async function run() {
     const user = technologyCollection.collection("user")
   
    
-    await client.connect();
+    // await client.connect();
     // Send a ping to confirm a successful connection
 
     app.post('/product', async (req, res) =>{
@@ -109,7 +108,6 @@ async function run() {
       const result = await technology.find(query).toArray(); 
       console.log(result);
       res.send(result);
-
     })
 
     app.get('/product/:id', async(req, res) =>{
@@ -125,6 +123,23 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result)
     })
+
+
+    app.get('/users', async(req, res) =>{
+      const cursor = user.find();
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+
+    app.get('/users/:email', async(req, res) =>{
+      const reqEmail = req.params.email;
+      const query = { email: reqEmail };
+      const result = await user.find(query).toArray(); 
+      console.log(result);
+      res.send(result);
+    })
+
+  
 
     app.delete('/my-cart/:id', async(req, res) => {
       const id =req.params.id;
