@@ -5,7 +5,14 @@ require('dotenv').config()
 const app = express()
 const port = process.env.port || 5000;
 
-app.use(cors())
+const corsConfig = {
+  origin: '*',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+  }
+  app.use(cors(corsConfig))
+
+
 app.use(express.json())
 
 
@@ -148,6 +155,9 @@ async function run() {
       res.send(result)
      
     })
+
+
+    
 
 
 
